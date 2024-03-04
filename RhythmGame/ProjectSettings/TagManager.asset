@@ -3,7 +3,11 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 2
-  tags: []
+  tags:
+  - S_lane
+  - D_lane
+  - K_lane
+  - L_lane
   layers:
   - Default
   - TransparentFX
