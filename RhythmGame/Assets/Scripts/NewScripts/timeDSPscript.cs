@@ -1,8 +1,6 @@
-using Melanchall.DryWetMidi.Interaction;
-using Melanchall.DryWetMidi.MusicTheory;
 using System.Collections.Generic;
+using Unity.Mathematics;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 public class timeDSPscript : MonoBehaviour
 {
@@ -14,9 +12,17 @@ public class timeDSPscript : MonoBehaviour
     private bool audioPlaying = false;
     public float noteSpacing = 10;
     public double offSet = 0;
-    private List<(Transform transform, float time)> notes = new List<(Transform transform, float time)>();
+    private List<(Transform transform, float time, KeyType keyType)> notes = new List<(Transform transform, float time, KeyType keyType)>();
     public int notesLeftBeforeLoss;
-    public double marginOfError = 1;
+    public double watOfError = 1;
+
+    public enum KeyType
+    {
+        S,
+        D,
+        K,
+        L
+    }
 
     private void Awake()
     {
@@ -44,10 +50,6 @@ public class timeDSPscript : MonoBehaviour
             DetectNotes(elapsedTime);
         }
 
-        if (Input.anyKeyDown)
-        {
-            Debug.Log("A key was pressed");
-        }
     }
 
     private void SpawnNotes()
@@ -64,7 +66,7 @@ public class timeDSPscript : MonoBehaviour
 
                 GameObject instantiatedObject = Instantiate(nodePrefab, canvas.transform);
                 instantiatedObject.transform.localPosition = newPosition;
-                notes.Add((instantiatedObject.transform, data[0]));
+                notes.Add((instantiatedObject.transform, data[0], KeyType.S));
             }
         }
 
@@ -80,7 +82,7 @@ public class timeDSPscript : MonoBehaviour
 
                 GameObject instantiatedObject = Instantiate(nodePrefab, canvas.transform);
                 instantiatedObject.transform.localPosition = newPosition;
-                notes.Add((instantiatedObject.transform, data[0]));
+                notes.Add((instantiatedObject.transform, data[0], KeyType.D));
             }
         }
 
@@ -88,7 +90,7 @@ public class timeDSPscript : MonoBehaviour
         {
             if (data.Length > 0)
             {
-                float xCoordinate = 150;
+                float xCoordinate = 50;
                 float yCoordinate = data[0] * noteSpacing;
                 float zCoordinate = 0f;
 
@@ -96,7 +98,7 @@ public class timeDSPscript : MonoBehaviour
 
                 GameObject instantiatedObject = Instantiate(nodePrefab, canvas.transform);
                 instantiatedObject.transform.localPosition = newPosition;
-                notes.Add((instantiatedObject.transform, data[0]));
+                notes.Add((instantiatedObject.transform, data[0], KeyType.K));
             }
         }
 
@@ -104,7 +106,7 @@ public class timeDSPscript : MonoBehaviour
         {
             if (data.Length > 0)
             {
-                float xCoordinate = 350;
+                float xCoordinate = 250;
                 float yCoordinate = data[0] * noteSpacing;
                 float zCoordinate = 0f;
 
@@ -112,7 +114,7 @@ public class timeDSPscript : MonoBehaviour
 
                 GameObject instantiatedObject = Instantiate(nodePrefab, canvas.transform);
                 instantiatedObject.transform.localPosition = newPosition;
-                notes.Add((instantiatedObject.transform, data[0]));
+                notes.Add((instantiatedObject.transform, data[0], KeyType.L));
             }
         }
 
@@ -133,23 +135,99 @@ public class timeDSPscript : MonoBehaviour
 
     private void DetectNotes(double elapsedTime)
     {
-        foreach (var noteData in DataSheet.doubleArraySKey)
+        if (Input.GetKeyDown(KeyCode.S))
         {
-            if ((noteData[0] - elapsedTime) < marginOfError && Input.GetKeyDown(KeyCode.S))
+            for (int i = notes.Count - 1; i >= 0; i--)
             {
-                var note = notes.Find(n => Mathf.Approximately(n.time, noteData[0]));
-
-                if (note.transform != null && note.transform.gameObject != null)
+                var note = notes[i];
+                if (note.keyType == KeyType.S)
                 {
-                    DestroyImmediate(note.transform.gameObject);
-                    notes.Remove(note);
-                    break;
+                    double Difference = math.abs(note.time - elapsedTime + offSet);
+
+                    if (Difference < watOfError)
+                    {
+                        Destroy(note.transform.gameObject);
+                        notes.RemoveAt(i);
+
+                    }
+                }
+            }
+        }
+
+        if (Input.GetKeyDown(KeyCode.D))
+        {
+            for (int i = notes.Count - 1; i >= 0; i--)
+            {
+                var note = notes[i];
+                if (note.keyType == KeyType.D)
+                {
+                    double Difference = math.abs(note.time - elapsedTime + offSet);
+
+                    if (Difference < watOfError)
+                    {
+                        Destroy(note.transform.gameObject);
+                        notes.RemoveAt(i);
+
+                    }
+                }
+            }
+        }
+
+        if (Input.GetKeyDown(KeyCode.K))
+        {
+            for (int i = notes.Count - 1; i >= 0; i--)
+            {
+                var note = notes[i];
+                if (note.keyType == KeyType.K)
+                {
+                    double Difference = math.abs(note.time - elapsedTime + offSet);
+
+                    if (Difference < watOfError)
+                    {
+                        Destroy(note.transform.gameObject);
+                        notes.RemoveAt(i);
+
+                    }
+                }
+            }
+        }
+
+        if (Input.GetKeyDown(KeyCode.L))
+        {
+            for (int i = notes.Count - 1; i >= 0; i--)
+            {
+                var note = notes[i];
+                if (note.keyType == KeyType.L)
+                {
+                    double Difference = math.abs(note.time - elapsedTime + offSet);
+
+                    if (Difference < watOfError)
+                    {
+                        Destroy(note.transform.gameObject);
+                        notes.RemoveAt(i);
+                    }
                 }
             }
         }
     }
+        //foreach (var noteData in DataSheet.doubleArraySKey)
+        //{
+        //    if ((noteData[0] - elapsedTime) < marginOfError && Input.GetKeyDown(KeyCode.S))
+        //    {
+        //        var note = notes.Find(n => Mathf.Approximately(n.time, noteData[0]));
 
-    //if (Mathf.Abs((float)(noteData[0] - elapsedTime)) < marginOfError && Input.GetKeyDown(KeyCode.S))
+        //        if (note.transform != null && note.transform.gameObject != null)
+        //        {
+        //            DestroyImmediate(note.transform.gameObject);
+        //            notes.Remove(note);
+        //            break;
+        //        }
+        //    }
+        //}
+        
+
+
+    //if(Mathf.Abs((float)(noteData[0] - elapsedTime)) < marginOfError && Input.GetKeyDown(KeyCode.S))
 
     private void NoteFailure()
     {
