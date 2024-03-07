@@ -8,6 +8,7 @@ TagManager:
   - D_lane
   - K_lane
   - L_lane
+  - note
   layers:
   - Default
   - TransparentFX
