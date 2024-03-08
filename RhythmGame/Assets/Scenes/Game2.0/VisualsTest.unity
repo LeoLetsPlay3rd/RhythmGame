@@ -1528,6 +1528,54 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 604220827}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!1 &697283071
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 697283073}
+  - component: {fileID: 697283072}
+  m_Layer: 0
+  m_Name: KeyManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &697283072
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 697283071}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f02799e21b64d9847914f0bcde4787bf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  circleS: {fileID: 770681172}
+  circleD: {fileID: 1348774853}
+  circleK: {fileID: 1246034370}
+  circleL: {fileID: 1557510266}
+--- !u!4 &697283073
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 697283071}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 1574.8564, y: -1444.3251, z: -1487.0548}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &725368902
 GameObject:
   m_ObjectHideFlags: 0
@@ -2034,6 +2082,7 @@ GameObject:
   - component: {fileID: 837790298}
   - component: {fileID: 837790297}
   - component: {fileID: 837790296}
+  - component: {fileID: 837790299}
   m_Layer: 0
   m_Name: Main Camera (1)
   m_TagString: MainCamera
@@ -2115,6 +2164,50 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &837790299
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 837790295}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a79441f348de89743a2939f4d699eac1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_RenderShadows: 1
+  m_RequiresDepthTextureOption: 2
+  m_RequiresOpaqueTextureOption: 2
+  m_CameraType: 0
+  m_Cameras: []
+  m_RendererIndex: -1
+  m_VolumeLayerMask:
+    serializedVersion: 2
+    m_Bits: 1
+  m_VolumeTrigger: {fileID: 0}
+  m_VolumeFrameworkUpdateModeOption: 2
+  m_RenderPostProcessing: 0
+  m_Antialiasing: 0
+  m_AntialiasingQuality: 2
+  m_StopNaN: 0
+  m_Dithering: 0
+  m_ClearDepth: 1
+  m_AllowXRRendering: 1
+  m_AllowHDROutput: 1
+  m_UseScreenCoordOverride: 0
+  m_ScreenSizeOverride: {x: 0, y: 0, z: 0, w: 0}
+  m_ScreenCoordScaleBias: {x: 0, y: 0, z: 0, w: 0}
+  m_RequiresDepthTexture: 0
+  m_RequiresColorTexture: 0
+  m_Version: 2
+  m_TaaSettings:
+    quality: 3
+    frameInfluence: 0.1
+    jitterScale: 1
+    mipBias: 0
+    varianceClampScale: 0.9
+    contrastAdaptiveSharpening: 0
 --- !u!1 &1105861032
 GameObject:
   m_ObjectHideFlags: 0
@@ -4148,7 +4241,6 @@ GameObject:
   - component: {fileID: 2114847245}
   - component: {fileID: 2114847244}
   - component: {fileID: 2114847243}
-  - component: {fileID: 2114847242}
   m_Layer: 0
   m_Name: NodeController (1)
   m_TagString: Untagged
@@ -4156,26 +4248,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &2114847242
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2114847241}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 00ffaf3eadb323f47ba6a8d365322c0c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  nodePrefab: {fileID: 2103810144}
-  canvas: {fileID: 62075178}
-  movementSpeed: 4
-  audioSource: {fileID: 248514107}
-  noteSpacing: 200
-  offSet: 0.4
-  notesLeftBeforeLoss: 3
-  watOfError: 1
 --- !u!61 &2114847243
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -4242,6 +4314,10 @@ MonoBehaviour:
   offSet: 0.4
   notesLeftBeforeLoss: 3
   watOfError: 0.1
+  successfullHitS: 0
+  successfullHitD: 0
+  successfullHitK: 0
+  successfullHitL: 0
 --- !u!4 &2114847245
 Transform:
   m_ObjectHideFlags: 0
@@ -4272,3 +4348,4 @@ SceneRoots:
   - {fileID: 1395176946}
   - {fileID: 2114847245}
   - {fileID: 2103810143}
+  - {fileID: 697283073}

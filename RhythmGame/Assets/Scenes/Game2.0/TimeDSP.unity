@@ -259,7 +259,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 7f6bebdb4dc0e4244894204dc80cda0e, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 2373108615f21bf4ab916441749abd56, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -286,8 +286,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 243089336}
-  - component: {fileID: 243089335}
-  - component: {fileID: 243089337}
   - component: {fileID: 243089338}
   m_Layer: 0
   m_Name: NodeController
@@ -296,27 +294,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &243089335
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 243089334}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 00ffaf3eadb323f47ba6a8d365322c0c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  nodePrefab: {fileID: 285072817939176688, guid: d5d5d2e69db43984eb68899379326f86,
-    type: 3}
-  canvas: {fileID: 370493197}
-  movementSpeed: 4
-  audioSource: {fileID: 1584992971}
-  noteSpacing: 200
-  offSet: 0.4
-  notesLeftBeforeLoss: 3
-  watOfError: 0.1
 --- !u!4 &243089336
 Transform:
   m_ObjectHideFlags: 0
@@ -332,51 +309,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!61 &243089337
-BoxCollider2D:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 243089334}
-  m_Enabled: 1
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_ForceSendLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_ForceReceiveLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_ContactCaptureLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_CallbackLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_IsTrigger: 1
-  m_UsedByEffector: 0
-  m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
-  m_SpriteTilingProperty:
-    border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0, y: 0}
-    oldSize: {x: 0, y: 0}
-    newSize: {x: 0, y: 0}
-    adaptiveTilingThreshold: 0
-    drawMode: 0
-    adaptiveTiling: 0
-  m_AutoTiling: 0
-  serializedVersion: 2
-  m_Size: {x: 100, y: 100}
-  m_EdgeRadius: 0
 --- !u!114 &243089338
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -396,7 +328,11 @@ MonoBehaviour:
   noteSpacing: 200
   offSet: 0.4
   notesLeftBeforeLoss: 3
-  watOfError: 1
+  watOfError: 0.1
+  successfullHitS: 0
+  successfullHitD: 0
+  successfullHitK: 0
+  successfullHitL: 0
 --- !u!1 &315882517
 GameObject:
   m_ObjectHideFlags: 0
@@ -625,7 +561,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 7f6bebdb4dc0e4244894204dc80cda0e, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 2373108615f21bf4ab916441749abd56, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -643,6 +579,56 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 664165048}
   m_CullTransparentMesh: 1
+--- !u!1 &1019396632
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1019396634}
+  - component: {fileID: 1019396633}
+  m_Layer: 0
+  m_Name: KeyManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1019396633
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1019396632}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f02799e21b64d9847914f0bcde4787bf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  circleS: {fileID: 1250077559}
+  circleD: {fileID: 2112619598}
+  circleK: {fileID: 664165050}
+  circleL: {fileID: 197636637}
+  defaultSprite: {fileID: 21300000, guid: 2373108615f21bf4ab916441749abd56, type: 3}
+  pressedSprite: {fileID: 21300000, guid: 01f16f02e75b2fd459e20e504a713979, type: 3}
+--- !u!4 &1019396634
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1019396632}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 1574.8564, y: -1444.3251, z: -1487.0548}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1248563991
 GameObject:
   m_ObjectHideFlags: 0
@@ -792,7 +778,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 7f6bebdb4dc0e4244894204dc80cda0e, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 2373108615f21bf4ab916441749abd56, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -1304,7 +1290,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 7f6bebdb4dc0e4244894204dc80cda0e, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 2373108615f21bf4ab916441749abd56, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -1349,8 +1335,7 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Sprite
       value: 
-      objectReference: {fileID: 21300000, guid: db8c3eb1911fa8a4a9f538ab5dcbb244,
-        type: 3}
+      objectReference: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
     - target: {fileID: 8384860480951873335, guid: d5d5d2e69db43984eb68899379326f86,
         type: 3}
       propertyPath: m_Pivot.x
@@ -1472,3 +1457,4 @@ SceneRoots:
   - {fileID: 243089336}
   - {fileID: 1584992972}
   - {fileID: 7324044731985094698}
+  - {fileID: 1019396634}

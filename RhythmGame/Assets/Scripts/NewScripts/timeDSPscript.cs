@@ -16,6 +16,11 @@ public class timeDSPscript : MonoBehaviour
     public int notesLeftBeforeLoss;
     public double watOfError = 1;
 
+    public bool successfullHitS;
+    public bool successfullHitD;
+    public bool successfullHitK;
+    public bool successfullHitL;
+
     public enum KeyType
     {
         S,
@@ -29,6 +34,11 @@ public class timeDSPscript : MonoBehaviour
         audioStartTime = AudioSettings.dspTime;
         SpawnNotes();
         notesLeftBeforeLoss = 3;
+
+        successfullHitS = false;
+        successfullHitD = false;
+        successfullHitK = false;
+        successfullHitL = false;
     }
 
     private void Update()
@@ -149,6 +159,7 @@ public class timeDSPscript : MonoBehaviour
                         Destroy(note.transform.gameObject);
                         notes.RemoveAt(i);
 
+                        successfullHitS = true;
                     }
                 }
             }
@@ -168,6 +179,7 @@ public class timeDSPscript : MonoBehaviour
                         Destroy(note.transform.gameObject);
                         notes.RemoveAt(i);
 
+                        successfullHitD = true;
                     }
                 }
             }
@@ -187,6 +199,7 @@ public class timeDSPscript : MonoBehaviour
                         Destroy(note.transform.gameObject);
                         notes.RemoveAt(i);
 
+                        successfullHitK = true;
                     }
                 }
             }
@@ -205,6 +218,8 @@ public class timeDSPscript : MonoBehaviour
                     {
                         Destroy(note.transform.gameObject);
                         notes.RemoveAt(i);
+
+                        successfullHitL = true;
                     }
                 }
             }
