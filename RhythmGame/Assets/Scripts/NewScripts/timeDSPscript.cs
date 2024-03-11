@@ -225,24 +225,6 @@ public class timeDSPscript : MonoBehaviour
             }
         }
     }
-        //foreach (var noteData in DataSheet.doubleArraySKey)
-        //{
-        //    if ((noteData[0] - elapsedTime) < marginOfError && Input.GetKeyDown(KeyCode.S))
-        //    {
-        //        var note = notes.Find(n => Mathf.Approximately(n.time, noteData[0]));
-
-        //        if (note.transform != null && note.transform.gameObject != null)
-        //        {
-        //            DestroyImmediate(note.transform.gameObject);
-        //            notes.Remove(note);
-        //            break;
-        //        }
-        //    }
-        //}
-        
-
-
-    //if(Mathf.Abs((float)(noteData[0] - elapsedTime)) < marginOfError && Input.GetKeyDown(KeyCode.S))
 
     private void NoteFailure()
     {
