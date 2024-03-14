@@ -97,7 +97,7 @@ public class timeDSPscript : MonoBehaviour
 
                     if (enableChild)
                     {
-                        float heightScale = data[1] > 0.220f ? 1 + (data[1] - 0.220f) * scaleFactor : 1; // Adjust the scale factor here
+                        float heightScale = data[1] > 0.220f ? 1 + (data[1] - 0.220f) * scaleFactor : 1;
                         RectTransform childRectTransform = originalChild.GetComponent<RectTransform>();
                         if (childRectTransform != null)
                         {
@@ -143,7 +143,7 @@ public class timeDSPscript : MonoBehaviour
 
                     if (enableChild)
                     {
-                        float heightScale = data[1] > 0.220f ? 1 + (data[1] - 0.220f) * scaleFactor : 1; // Adjust the scale factor here
+                        float heightScale = data[1] > 0.220f ? 1 + (data[1] - 0.220f) * scaleFactor : 1;
                         RectTransform childRectTransform = originalChild.GetComponent<RectTransform>();
                         if (childRectTransform != null)
                         {
@@ -177,7 +177,37 @@ public class timeDSPscript : MonoBehaviour
                 Vector3 newPosition = new Vector3(xCoordinate, yCoordinate, zCoordinate);
 
                 GameObject instantiatedObject = Instantiate(nodePrefab, canvas.transform);
+
                 instantiatedObject.transform.localPosition = newPosition;
+
+                GameObject originalChild = instantiatedObject.transform.Find("Length").gameObject;
+
+                if (originalChild != null)
+                {
+                    bool enableChild = data[1] > 0.220f;
+                    originalChild.SetActive(enableChild);
+
+                    if (enableChild)
+                    {
+                        float heightScale = data[1] > 0.220f ? 1 + (data[1] - 0.220f) * scaleFactor : 1;
+                        RectTransform childRectTransform = originalChild.GetComponent<RectTransform>();
+                        if (childRectTransform != null)
+                        {
+                            float newHeight = childRectTransform.sizeDelta.y * heightScale;
+
+                            childRectTransform.SetInsetAndSizeFromParentEdge(RectTransform.Edge.Bottom, 0, newHeight);
+                        }
+                        else
+                        {
+                            Debug.LogError("Child object does not have a RectTransform component.");
+                        }
+                    }
+                }
+                else
+                {
+                    Debug.LogError("Child object not found in prefab.");
+                }
+
                 notes.Add((instantiatedObject.transform, data[0], data[1], KeyType.K));
             }
         }
@@ -193,11 +223,40 @@ public class timeDSPscript : MonoBehaviour
                 Vector3 newPosition = new Vector3(xCoordinate, yCoordinate, zCoordinate);
 
                 GameObject instantiatedObject = Instantiate(nodePrefab, canvas.transform);
+
                 instantiatedObject.transform.localPosition = newPosition;
+
+                GameObject originalChild = instantiatedObject.transform.Find("Length").gameObject;
+
+                if (originalChild != null)
+                {
+                    bool enableChild = data[1] > 0.220f;
+                    originalChild.SetActive(enableChild);
+
+                    if (enableChild)
+                    {
+                        float heightScale = data[1] > 0.220f ? 1 + (data[1] - 0.220f) * scaleFactor : 1;
+                        RectTransform childRectTransform = originalChild.GetComponent<RectTransform>();
+                        if (childRectTransform != null)
+                        {
+                            float newHeight = childRectTransform.sizeDelta.y * heightScale;
+
+                            childRectTransform.SetInsetAndSizeFromParentEdge(RectTransform.Edge.Bottom, 0, newHeight);
+                        }
+                        else
+                        {
+                            Debug.LogError("Child object does not have a RectTransform component.");
+                        }
+                    }
+                }
+                else
+                {
+                    Debug.LogError("Child object not found in prefab.");
+                }
+
                 notes.Add((instantiatedObject.transform, data[0], data[1], KeyType.L));
             }
         }
-
     }
 
     private void MoveNotes(double elapsedTime)
