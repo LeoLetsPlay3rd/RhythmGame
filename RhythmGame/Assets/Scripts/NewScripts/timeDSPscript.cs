@@ -403,42 +403,13 @@ public class timeDSPscript : MonoBehaviour
             yield return null;
         }
 
-        // Set the alpha to 0 after the loop
         materialMiss.SetFloat("_OnMissAlpha", 0f);
     }
 
+    // Coroutine to wait for 1 second before destroying the note
     private IEnumerator DestroyNoteAfterDelay(GameObject noteObject)
     {
-        yield return new WaitForSeconds(1f);
-
-        Renderer rendererComponent = noteObject.GetComponent<Renderer>();
-        if (rendererComponent != null)
-        {
-            Material noteMaterial = rendererComponent.material;
-            StartCoroutine(DecreaseMaterialProperty(noteMaterial, 0.1f));
-        }
-
+        yield return new WaitForSeconds(0.1f);
         Destroy(noteObject);
     }
-
-    private IEnumerator DecreaseMaterialProperty(Material material, float duration)
-    {
-        float elapsedTime = 0f;
-        float startValue = 1f;
-        float endValue = 0f;
-
-        while (elapsedTime < duration)
-        {
-            float newValue = Mathf.Lerp(startValue, endValue, elapsedTime / duration);
-
-            material.SetFloat("_ColourFade", newValue);
-
-            elapsedTime += Time.deltaTime;
-            yield return null;
-        }
-
-        material.SetFloat("_ColourFade", endValue);
-    }
-
 }
-
