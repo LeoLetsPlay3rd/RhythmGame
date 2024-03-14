@@ -1778,10 +1778,12 @@ MonoBehaviour:
   audioSource: {fileID: 1380785352}
   noteSpacing: 200
   offSet: 0.4
+  scaleFactor: 2
   notesLeftBeforeLoss: 3
   watOfError: 0.1
   missLineYPosition: 100
   materialMiss: {fileID: 2100000, guid: d263c0ec8fe299a4584277d1caf3b80c, type: 2}
+  colouredNoteMat: {fileID: 2100000, guid: ae69d11d84b5da74295b4217cebf7ce6, type: 2}
   successfullHitS: 0
   successfullHitD: 0
   successfullHitK: 0
