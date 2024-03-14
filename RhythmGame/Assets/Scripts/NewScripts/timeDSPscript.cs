@@ -118,9 +118,6 @@ public class timeDSPscript : MonoBehaviour
             }
         }
 
-
-
-
         foreach (var data in DataSheet.doubleArrayDKey)
         {
             if (data.Length > 0)
