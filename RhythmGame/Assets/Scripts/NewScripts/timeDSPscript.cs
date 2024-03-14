@@ -12,7 +12,7 @@ public class timeDSPscript : MonoBehaviour
     private bool audioPlaying = false;
     public float noteSpacing = 10;
     public double offSet = 0;
-    private List<(Transform transform, float time, KeyType keyType)> notes = new List<(Transform transform, float time, KeyType keyType)>();
+    private List<(Transform transform, float time, float length, KeyType keyType)> notes = new List<(Transform transform, float time, float length, KeyType keyType)>();
     public int notesLeftBeforeLoss;
     public double watOfError = 1;
 
@@ -74,11 +74,52 @@ public class timeDSPscript : MonoBehaviour
 
                 Vector3 newPosition = new Vector3(xCoordinate, yCoordinate, zCoordinate);
 
+                // Instantiate the prefab
                 GameObject instantiatedObject = Instantiate(nodePrefab, canvas.transform);
+
+                // Set the position
                 instantiatedObject.transform.localPosition = newPosition;
-                notes.Add((instantiatedObject.transform, data[0], KeyType.S));
+
+                // Find the child object to clone
+                GameObject originalChild = instantiatedObject.transform.Find("Length").gameObject;
+
+                if (originalChild != null)
+                {
+                    // Enable or disable the child object based on the condition
+                    bool enableChild = data[1] > 0.220f;
+                    originalChild.SetActive(enableChild);
+
+                    if (enableChild)
+                    {
+                        // Set the scale of the child object based on data[1]
+                        float heightScale = data[1]; // Assuming data[1] is the desired height scale
+                        RectTransform childRectTransform = originalChild.GetComponent<RectTransform>();
+                        if (childRectTransform != null)
+                        {
+                            // Calculate the new size based on the height scale
+                            float newHeight = childRectTransform.sizeDelta.y * heightScale;
+
+                            // Set the size and alignment
+                            childRectTransform.SetInsetAndSizeFromParentEdge(RectTransform.Edge.Bottom, 0, newHeight);
+                        }
+                        else
+                        {
+                            Debug.LogError("Child object does not have a RectTransform component.");
+                        }
+                    }
+                }
+                else
+                {
+                    Debug.LogError("Child object not found in prefab.");
+                }
+
+                // Add the instantiated object's transform to the list
+                notes.Add((instantiatedObject.transform, data[0], data[1], KeyType.S));
             }
         }
+
+
+
 
         foreach (var data in DataSheet.doubleArrayDKey)
         {
@@ -92,7 +133,7 @@ public class timeDSPscript : MonoBehaviour
 
                 GameObject instantiatedObject = Instantiate(nodePrefab, canvas.transform);
                 instantiatedObject.transform.localPosition = newPosition;
-                notes.Add((instantiatedObject.transform, data[0], KeyType.D));
+                notes.Add((instantiatedObject.transform, data[0], data[1], KeyType.D));
             }
         }
 
@@ -108,7 +149,7 @@ public class timeDSPscript : MonoBehaviour
 
                 GameObject instantiatedObject = Instantiate(nodePrefab, canvas.transform);
                 instantiatedObject.transform.localPosition = newPosition;
-                notes.Add((instantiatedObject.transform, data[0], KeyType.K));
+                notes.Add((instantiatedObject.transform, data[0], data[1], KeyType.K));
             }
         }
 
@@ -124,7 +165,7 @@ public class timeDSPscript : MonoBehaviour
 
                 GameObject instantiatedObject = Instantiate(nodePrefab, canvas.transform);
                 instantiatedObject.transform.localPosition = newPosition;
-                notes.Add((instantiatedObject.transform, data[0], KeyType.L));
+                notes.Add((instantiatedObject.transform, data[0], data[1], KeyType.L));
             }
         }
 
