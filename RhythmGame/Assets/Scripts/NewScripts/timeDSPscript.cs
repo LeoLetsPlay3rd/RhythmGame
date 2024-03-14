@@ -13,13 +13,22 @@ public class timeDSPscript : MonoBehaviour
     public float noteSpacing = 10;
     public double offSet = 0;
     private List<(Transform transform, float time, float length, KeyType keyType)> notes = new List<(Transform transform, float time, float length, KeyType keyType)>();
+
     public int notesLeftBeforeLoss;
     public double watOfError = 1;
+    public float missLineYPosition = -420f;
+    private Dictionary<Transform, bool> notesCheckedForMiss = new Dictionary<Transform, bool>();
+    public Material materialMiss;
+    private int missedNotesFadingOut = 0;
 
     public bool successfullHitS;
     public bool successfullHitD;
     public bool successfullHitK;
     public bool successfullHitL;
+
+    private float missAlpha = 0f;
+    private float fadeDuration = 0.5f;
+    private float fadeTimer = 0f;
 
     public enum KeyType
     {
@@ -33,12 +42,14 @@ public class timeDSPscript : MonoBehaviour
     {
         audioStartTime = AudioSettings.dspTime;
         SpawnNotes();
-        notesLeftBeforeLoss = 3;
+        notesLeftBeforeLoss = 1;
 
         successfullHitS = false;
         successfullHitD = false;
         successfullHitK = false;
         successfullHitL = false;
+
+        materialMiss.SetFloat("_OnMissAlpha", missAlpha);
     }
 
     private void Update()
@@ -68,7 +79,7 @@ public class timeDSPscript : MonoBehaviour
         {
             if (data.Length > 0)
             {
-                float xCoordinate = -350;
+                float xCoordinate = -190;
                 float yCoordinate = data[0] * noteSpacing;
                 float zCoordinate = 0f;
 
@@ -122,7 +133,7 @@ public class timeDSPscript : MonoBehaviour
         {
             if (data.Length > 0)
             {
-                float xCoordinate = -150;
+                float xCoordinate = -65;
                 float yCoordinate = data[0] * noteSpacing;
                 float zCoordinate = 0f;
 
@@ -138,7 +149,7 @@ public class timeDSPscript : MonoBehaviour
         {
             if (data.Length > 0)
             {
-                float xCoordinate = 50;
+                float xCoordinate = 65;
                 float yCoordinate = data[0] * noteSpacing;
                 float zCoordinate = 0f;
 
@@ -154,7 +165,7 @@ public class timeDSPscript : MonoBehaviour
         {
             if (data.Length > 0)
             {
-                float xCoordinate = 250;
+                float xCoordinate = 190;
                 float yCoordinate = data[0] * noteSpacing;
                 float zCoordinate = 0f;
 
@@ -183,6 +194,26 @@ public class timeDSPscript : MonoBehaviour
 
     private void DetectNotes(double elapsedTime)
     {
+        // Iterate over all notes
+        foreach (var note in notes)
+        {
+            // Check if miss check has been performed for this note
+            if (!notesCheckedForMiss.ContainsKey(note.transform))
+            {
+                // Check if the note's Y position is below the miss line
+                if (note.transform.position.y < missLineYPosition)
+                {
+                    // Log the miss
+                    Debug.Log("Missed note detected!");
+
+                    notesLeftBeforeLoss--;
+
+                    // Mark the note as checked for miss
+                    notesCheckedForMiss[note.transform] = true;
+                }
+            }
+        }
+
         if (Input.GetKeyDown(KeyCode.S))
         {
             for (int i = notes.Count - 1; i >= 0; i--)
@@ -202,6 +233,7 @@ public class timeDSPscript : MonoBehaviour
                 }
             }
         }
+
 
         if (Input.GetKeyDown(KeyCode.D))
         {
@@ -264,19 +296,40 @@ public class timeDSPscript : MonoBehaviour
         }
     }
 
-    private void NoteFailure()
-    {
-        notesLeftBeforeLoss--;
-        Debug.Log("Notes left before loss: " + notesLeftBeforeLoss);
-    }
-
-
     private void StatusCheck()
     {
-        if(notesLeftBeforeLoss <= 0)
+        if (notesLeftBeforeLoss == 0)
         {
-            Application.Quit();
-            Debug.Log("Application quit");
+            if (materialMiss != null)
+            {
+                // Increment fadeTimer by Time.deltaTime to gradually fade out missAlpha
+                fadeTimer += Time.deltaTime;
+
+                // Calculate missAlpha based on the fade effect progress
+                missAlpha = Mathf.Lerp(1f, 0f, fadeTimer / fadeDuration);
+
+                // Update the material's alpha value
+                materialMiss.SetFloat("_OnMissAlpha", missAlpha);
+
+                // Check if the fade effect has completed for all missed notes
+                if (fadeTimer >= fadeDuration && missedNotesFadingOut == 0)
+                {
+                    // Reset the variables
+                    fadeTimer = 0f;
+                    missAlpha = 0f;
+                    notesLeftBeforeLoss = 1; // Reset notesLeftBeforeLoss to 1 after the fade effect
+                }
+            }
+            else
+            {
+                Debug.LogError("Material is not assigned.");
+            }
+        }
+        else
+        {
+            // Reset fadeTimer and missAlpha when there are notes left before loss
+            fadeTimer = 0f;
+            missAlpha = 0f;
         }
     }
 }
