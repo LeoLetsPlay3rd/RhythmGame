@@ -96,6 +96,7 @@ Material:
     m_Ints: []
     m_Floats:
     - _AlphaClip: 0
+    - _AlphaThreshold: 0
     - _AlphaToMask: 0
     - _Blend: 0
     - _BlendModePreserveSpecular: 1
@@ -114,7 +115,7 @@ Material:
     - _GlossyReflections: 0
     - _Metallic: 0
     - _OcclusionStrength: 1
-    - _OnMissAlpha: 0
+    - _OnMissAlpha: 0.30870825
     - _Parallax: 0.005
     - _QueueControl: 0
     - _QueueOffset: 0
