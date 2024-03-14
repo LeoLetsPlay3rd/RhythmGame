@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using Unity.Mathematics;
 using UnityEngine;
 using System.Collections;
+using UnityEngine.UI;
 
 
 public class timeDSPscript : MonoBehaviour
@@ -22,6 +23,7 @@ public class timeDSPscript : MonoBehaviour
     public float missLineYPosition = -420f;
     private Dictionary<Transform, bool> notesCheckedForMiss = new Dictionary<Transform, bool>();
     public Material materialMiss;
+    public Material colouredNoteMat;
 
     public bool successfullHitS;
     public bool successfullHitD;
@@ -302,10 +304,23 @@ public class timeDSPscript : MonoBehaviour
 
                     if (Difference < watOfError)
                     {
-                        Destroy(note.transform.gameObject);
+                        GameObject noteObject = note.transform.gameObject;
+
+                        StartCoroutine(DestroyNoteAfterDelay(noteObject));
+
                         notes.RemoveAt(i);
 
                         successfullHitS = true;
+
+                        Image imageComponent = note.transform.GetComponent<Image>();
+                        if (imageComponent != null)
+                        {
+                            imageComponent.material = colouredNoteMat;
+                        }
+                        else
+                        {
+                            Debug.LogError("Image component not found in the prefab.");
+                        }
                     }
                 }
             }
@@ -391,6 +406,10 @@ public class timeDSPscript : MonoBehaviour
         materialMiss.SetFloat("_OnMissAlpha", 0f);
     }
 
-
-
+    // Coroutine to wait for 1 second before destroying the note
+    private IEnumerator DestroyNoteAfterDelay(GameObject noteObject)
+    {
+        yield return new WaitForSeconds(1f);
+        Destroy(noteObject);
+    }
 }
