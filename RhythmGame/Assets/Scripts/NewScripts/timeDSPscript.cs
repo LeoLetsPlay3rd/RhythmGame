@@ -1,6 +1,8 @@
 using System.Collections.Generic;
 using Unity.Mathematics;
 using UnityEngine;
+using System.Collections;
+
 
 public class timeDSPscript : MonoBehaviour
 {
@@ -19,7 +21,6 @@ public class timeDSPscript : MonoBehaviour
     public float missLineYPosition = -420f;
     private Dictionary<Transform, bool> notesCheckedForMiss = new Dictionary<Transform, bool>();
     public Material materialMiss;
-    private int missedNotesFadingOut = 0;
 
     public bool successfullHitS;
     public bool successfullHitD;
@@ -27,8 +28,7 @@ public class timeDSPscript : MonoBehaviour
     public bool successfullHitL;
 
     private float missAlpha = 0f;
-    private float fadeDuration = 0.5f;
-    private float fadeTimer = 0f;
+    private float fadeDuration = 1.5f;
 
     public enum KeyType
     {
@@ -65,8 +65,6 @@ public class timeDSPscript : MonoBehaviour
             double elapsedTime = AudioSettings.dspTime - audioStartTime + offSet;
 
             MoveNotes(elapsedTime);
-
-            StatusCheck();
 
             DetectNotes(elapsedTime);
         }
@@ -194,7 +192,7 @@ public class timeDSPscript : MonoBehaviour
 
     private void DetectNotes(double elapsedTime)
     {
-        // Iterate over all notes
+        // Within the loop for detecting missed notes
         foreach (var note in notes)
         {
             // Check if miss check has been performed for this note
@@ -206,13 +204,16 @@ public class timeDSPscript : MonoBehaviour
                     // Log the miss
                     Debug.Log("Missed note detected!");
 
-                    notesLeftBeforeLoss--;
+                    // Start fading out miss alpha
+                    StartCoroutine(FadeOutMissAlpha(fadeDuration));
 
                     // Mark the note as checked for miss
                     notesCheckedForMiss[note.transform] = true;
                 }
             }
         }
+
+
 
         if (Input.GetKeyDown(KeyCode.S))
         {
@@ -296,40 +297,28 @@ public class timeDSPscript : MonoBehaviour
         }
     }
 
-    private void StatusCheck()
+    private IEnumerator FadeOutMissAlpha(float duration)
     {
-        if (notesLeftBeforeLoss == 0)
+        float elapsedTime = 0f;
+        float startAlpha = 1f;
+
+        // Gradually decrease miss alpha over the specified duration
+        while (elapsedTime < duration)
         {
-            if (materialMiss != null)
-            {
-                // Increment fadeTimer by Time.deltaTime to gradually fade out missAlpha
-                fadeTimer += Time.deltaTime;
+            // Calculate the current alpha value based on elapsed time and duration
+            float alpha = Mathf.Lerp(startAlpha, 0f, elapsedTime / duration);
+            materialMiss.SetFloat("_OnMissAlpha", alpha);
 
-                // Calculate missAlpha based on the fade effect progress
-                missAlpha = Mathf.Lerp(1f, 0f, fadeTimer / fadeDuration);
+            // Update the elapsed time
+            elapsedTime += Time.deltaTime;
 
-                // Update the material's alpha value
-                materialMiss.SetFloat("_OnMissAlpha", missAlpha);
-
-                // Check if the fade effect has completed for all missed notes
-                if (fadeTimer >= fadeDuration && missedNotesFadingOut == 0)
-                {
-                    // Reset the variables
-                    fadeTimer = 0f;
-                    missAlpha = 0f;
-                    notesLeftBeforeLoss = 1; // Reset notesLeftBeforeLoss to 1 after the fade effect
-                }
-            }
-            else
-            {
-                Debug.LogError("Material is not assigned.");
-            }
+            yield return null;
         }
-        else
-        {
-            // Reset fadeTimer and missAlpha when there are notes left before loss
-            fadeTimer = 0f;
-            missAlpha = 0f;
-        }
+
+        // Ensure alpha is set to 0 at the end of the fade out
+        materialMiss.SetFloat("_OnMissAlpha", 0f);
     }
+
+
+
 }
