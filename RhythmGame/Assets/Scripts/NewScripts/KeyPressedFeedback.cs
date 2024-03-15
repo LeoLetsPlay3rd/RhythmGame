@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -15,90 +14,59 @@ public class KeyPressedFeedback : MonoBehaviour
 
     public float waitSeconds = 0.05f;
 
-    private bool sKeyPressed = false;
+    private timeDSPscript timeDSP;
+
+    private void Start()
+    {
+        timeDSP = GetComponent<timeDSPscript>();
+    }
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.S))
+        HandleKeyPress(KeyCode.S, circleS);
+        HandleKeyPress(KeyCode.D, circleD);
+        HandleKeyPress(KeyCode.K, circleK);
+        HandleKeyPress(KeyCode.L, circleL);
+    }
+
+    private void HandleKeyPress(KeyCode key, Image circle)
+    {
+        bool keyPressed = Input.GetKeyDown(key);
+        bool keyReleased = Input.GetKeyUp(key);
+
+        if (circle != null && defaultSprite != null)
         {
-            if (circleS != null && pressedSprite != null)
+            if (keyPressed && !GetSuccessfulHitFlag(key))
             {
-                circleS.sprite = pressedSprite;
-                sKeyPressed = true; 
+                circle.sprite = pressedSprite;
+            }
+            else if (keyReleased)
+            {
+                StartCoroutine(ResetSpriteAfterDelay(circle, defaultSprite, waitSeconds));
             }
         }
+    }
 
-        if (Input.GetKeyUp(KeyCode.S))
+    private IEnumerator ResetSpriteAfterDelay(Image image, Sprite newSprite, float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        image.sprite = newSprite;
+    }
+
+    private bool GetSuccessfulHitFlag(KeyCode key)
+    {
+        switch (key)
         {
-            if (circleS != null && defaultSprite != null)
-            {
-                sKeyPressed = false; 
-                StartCoroutine(ResetSpriteAfterDelay(circleS, defaultSprite, waitSeconds)); 
-            }
-        }
-
-        if (Input.GetKeyDown(KeyCode.D))
-        {
-            if (circleD != null && pressedSprite != null)
-            {
-                circleD.sprite = pressedSprite;
-                sKeyPressed = true;
-            }
-        }
-
-        if (Input.GetKeyUp(KeyCode.D))
-        {
-            if (circleD != null && defaultSprite != null)
-            {
-                sKeyPressed = false;
-                StartCoroutine(ResetSpriteAfterDelay(circleD, defaultSprite, waitSeconds));
-            }
-        }
-
-        if (Input.GetKeyDown(KeyCode.K))
-        {
-            if (circleK != null && pressedSprite != null)
-            {
-                circleK.sprite = pressedSprite;
-                sKeyPressed = true;
-            }
-        }
-
-        if (Input.GetKeyUp(KeyCode.K))
-        {
-            if (circleK != null && defaultSprite != null)
-            {
-                sKeyPressed = false;
-                StartCoroutine(ResetSpriteAfterDelay(circleK, defaultSprite, waitSeconds));
-            }
-        }
-
-        if (Input.GetKeyDown(KeyCode.L))
-        {
-            if (circleL != null && pressedSprite != null)
-            {
-                circleL.sprite = pressedSprite;
-                sKeyPressed = true;
-            }
-        }
-
-        if (Input.GetKeyUp(KeyCode.L))
-        {
-            if (circleL != null && defaultSprite != null)
-            {
-                sKeyPressed = false;
-                StartCoroutine(ResetSpriteAfterDelay(circleL, defaultSprite, waitSeconds));
-            }
-        }
-
-        IEnumerator ResetSpriteAfterDelay(Image image, Sprite newSprite, float delay)
-        {
-            yield return new WaitForSeconds(delay);
-
-            if (!sKeyPressed && image != null && newSprite != null)
-            {
-                image.sprite = newSprite;
-            }
+            case KeyCode.S:
+                return timeDSP != null && timeDSP.successfullHitS;
+            case KeyCode.D:
+                return timeDSP != null && timeDSP.successfullHitD;
+            case KeyCode.K:
+                return timeDSP != null && timeDSP.successfullHitK;
+            case KeyCode.L:
+                return timeDSP != null && timeDSP.successfullHitL;
+            default:
+                return false;
         }
     }
 }

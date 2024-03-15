@@ -30,6 +30,12 @@ public class timeDSPscript : MonoBehaviour
     public bool successfullHitK;
     public bool successfullHitL;
 
+    public GameObject SNoteImage;
+    public GameObject DNoteImage;
+    public GameObject KNoteImage;
+    public GameObject LNoteImage;
+
+
     private float missAlpha = 0f;
     private float fadeDuration = 0.5f;
 
@@ -53,6 +59,11 @@ public class timeDSPscript : MonoBehaviour
         successfullHitL = false;
 
         materialMiss.SetFloat("_OnMissAlpha", missAlpha);
+
+        SNoteImage.SetActive(false);
+        DNoteImage.SetActive(false);
+        KNoteImage.SetActive(false);
+        LNoteImage.SetActive(false);
     }
 
     private void Update()
@@ -274,6 +285,122 @@ public class timeDSPscript : MonoBehaviour
         }
     }
 
+    private IEnumerator FadeOutAndDestroy(GameObject noteObject)
+    {
+        Image noteImage = noteObject.GetComponent<Image>();
+        if (noteImage != null)
+        {
+            float elapsedTime = 0f;
+            float fadeDuration = 0.3f;
+
+            // Gradually decrease alpha over 0.3 seconds
+            while (elapsedTime < fadeDuration)
+            {
+                float newAlpha = Mathf.Lerp(1f, 0f, elapsedTime / fadeDuration);
+                Color newColor = noteImage.color;
+                newColor.a = newAlpha;
+                noteImage.color = newColor;
+                elapsedTime += Time.deltaTime;
+                yield return null;
+            }
+
+            // Ensure alpha is 0 after fading
+            Color finalColor = noteImage.color;
+            finalColor.a = 0f;
+            noteImage.color = finalColor;
+
+            // Destroy the note object
+            Destroy(noteObject);
+        }
+        else
+        {
+            Debug.LogError("Image component not found in the note prefab.");
+        }
+    }
+
+    private IEnumerator HandleSuccessfullHit(GameObject noteImageObject)
+    {
+        Image noteImage = noteImageObject.GetComponent<Image>();
+        if (noteImage != null)
+        {
+            // Enable the note image
+            noteImageObject.SetActive(true);
+
+            // Store initial properties
+            Color initialColor = noteImage.color;
+            Vector3 initialScale = noteImageObject.transform.localScale;
+
+            // Set initial alpha value
+            float initialAlpha = 0.3f;
+            float finalAlpha = 0f;
+            float fadeDuration = 0.1f; // 0.1 seconds fade duration
+            float startTime = Time.time;
+
+            // Set the initial alpha
+            Color startColor = noteImage.color;
+            startColor.a = initialAlpha;
+            noteImage.color = startColor;
+
+            // Set initial properties for scaling up
+            float scaleDuration = 0.1f; // 0.1 seconds for scaling up
+            Vector3 targetScale = Vector3.one * 1.875f;
+            float scaleStartTime = Time.time;
+
+            // Scale up gradually to 1.875 over scaleDuration seconds
+            while (Time.time < scaleStartTime + scaleDuration)
+            {
+                float t = (Time.time - scaleStartTime) / scaleDuration;
+                noteImageObject.transform.localScale = Vector3.Lerp(initialScale, targetScale, t);
+
+                // Update alpha value for fading
+                float alphaT = (Time.time - startTime) / fadeDuration;
+                float newAlpha = Mathf.Lerp(initialAlpha, finalAlpha, alphaT);
+                noteImage.material.SetFloat("_BasedIndicator", newAlpha);
+
+                yield return null;
+            }
+
+            // Ensure final properties are set
+            noteImageObject.transform.localScale = targetScale;
+
+            // Fade out the note gradually over fadeDuration seconds
+            while (Time.time < startTime + fadeDuration)
+            {
+                float t = (Time.time - startTime) / fadeDuration;
+                Color newColor = noteImage.color;
+                newColor.a = Mathf.Lerp(initialAlpha, finalAlpha, t);
+                noteImage.color = newColor;
+
+                // Update alpha value for fading
+                float newAlpha = Mathf.Lerp(initialAlpha, finalAlpha, t);
+                noteImage.material.SetFloat("_BasedIndicator", newAlpha);
+
+                yield return null;
+            }
+
+            // Ensure final properties are set
+            Color finalColor = noteImage.color;
+            finalColor.a = finalAlpha;
+            noteImage.color = finalColor;
+
+            // Restore initial properties
+            noteImage.color = initialColor;
+            noteImageObject.transform.localScale = initialScale;
+
+            noteImageObject.SetActive(false); // Disable the note image after fading
+        }
+        else
+        {
+            Debug.LogError("Image component not found in the note image object.");
+        }
+    }
+
+
+
+
+
+
+
     private void DetectNotes(double elapsedTime)
     {
         foreach (var note in notes)
@@ -305,27 +432,28 @@ public class timeDSPscript : MonoBehaviour
                     if (Difference < watOfError)
                     {
                         GameObject noteObject = note.transform.gameObject;
-
-                        StartCoroutine(DestroyNoteAfterDelay(noteObject));
-
                         notes.RemoveAt(i);
 
                         successfullHitS = true;
 
-                        Image imageComponent = note.transform.GetComponent<Image>();
-                        if (imageComponent != null)
+                        // Change material to colouredNoteMat
+                        Image image = note.transform.GetComponent<Image>();
+                        if (image != null)
                         {
-                            imageComponent.material = colouredNoteMat;
+                            image.material = colouredNoteMat;
+                            StartCoroutine(HandleSuccessfullHit(SNoteImage));
                         }
                         else
                         {
                             Debug.LogError("Image component not found in the prefab.");
                         }
+
+                        // Start coroutine to fade out and destroy note
+                        StartCoroutine(FadeOutAndDestroy(noteObject));
                     }
                 }
             }
         }
-
 
         if (Input.GetKeyDown(KeyCode.D))
         {
@@ -338,10 +466,25 @@ public class timeDSPscript : MonoBehaviour
 
                     if (Difference < watOfError)
                     {
-                        Destroy(note.transform.gameObject);
+                        GameObject noteObject = note.transform.gameObject;
                         notes.RemoveAt(i);
 
-                        successfullHitD = true;
+                        successfullHitS = true;
+
+                        // Change material to colouredNoteMat
+                        Image image = note.transform.GetComponent<Image>();
+                        if (image != null)
+                        {
+                            image.material = colouredNoteMat;
+                            StartCoroutine(HandleSuccessfullHit(DNoteImage));
+                        }
+                        else
+                        {
+                            Debug.LogError("Image component not found in the prefab.");
+                        }
+
+                        // Start coroutine to fade out and destroy note
+                        StartCoroutine(FadeOutAndDestroy(noteObject));
                     }
                 }
             }
@@ -358,10 +501,25 @@ public class timeDSPscript : MonoBehaviour
 
                     if (Difference < watOfError)
                     {
-                        Destroy(note.transform.gameObject);
+                        GameObject noteObject = note.transform.gameObject;
                         notes.RemoveAt(i);
 
-                        successfullHitK = true;
+                        successfullHitS = true;
+
+                        // Change material to colouredNoteMat
+                        Image image = note.transform.GetComponent<Image>();
+                        if (image != null)
+                        {
+                            image.material = colouredNoteMat;
+                            StartCoroutine(HandleSuccessfullHit(KNoteImage));
+                        }
+                        else
+                        {
+                            Debug.LogError("Image component not found in the prefab.");
+                        }
+
+                        // Start coroutine to fade out and destroy note
+                        StartCoroutine(FadeOutAndDestroy(noteObject));
                     }
                 }
             }
@@ -378,10 +536,25 @@ public class timeDSPscript : MonoBehaviour
 
                     if (Difference < watOfError)
                     {
-                        Destroy(note.transform.gameObject);
+                        GameObject noteObject = note.transform.gameObject;
                         notes.RemoveAt(i);
 
-                        successfullHitL = true;
+                        successfullHitS = true;
+
+                        // Change material to colouredNoteMat
+                        Image image = note.transform.GetComponent<Image>();
+                        if (image != null)
+                        {
+                            image.material = colouredNoteMat;
+                            StartCoroutine(HandleSuccessfullHit(LNoteImage));
+                        }
+                        else
+                        {
+                            Debug.LogError("Image component not found in the prefab.");
+                        }
+
+                        // Start coroutine to fade out and destroy note
+                        StartCoroutine(FadeOutAndDestroy(noteObject));
                     }
                 }
             }
@@ -409,7 +582,7 @@ public class timeDSPscript : MonoBehaviour
     // Coroutine to wait for 1 second before destroying the note
     private IEnumerator DestroyNoteAfterDelay(GameObject noteObject)
     {
-        yield return new WaitForSeconds(0.1f);
+        yield return new WaitForSeconds(1f);
         Destroy(noteObject);
     }
 }
