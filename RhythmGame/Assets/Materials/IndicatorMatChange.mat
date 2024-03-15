@@ -101,7 +101,7 @@ Material:
     m_Floats:
     - _AlphaClip: 0
     - _AlphaToMask: 0
-    - _BasedIndicator: 0.0065534594
+    - _BasedIndicator: 0.0036094666
     - _Blend: 0
     - _BlendModePreserveSpecular: 1
     - _BumpScale: 1
